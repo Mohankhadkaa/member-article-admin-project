@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Members</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Manage Members</h2>
+            <div class="user-info">
+                <span>Logged in as: <strong th:text="${currentUser.username}"></strong> (ADMIN)</span>
+                <a href="/articles" class="btn-link">Back to Articles</a>
+                <a href="/logout" class="btn-link">Logout</a>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="success" th:text="${success}"></div>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <h3>All Members</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="member : ${members}">
+                    <td th:text="${member.id}">1</td>
+                    <td th:text="${member.username}">user</td>
+                    <td th:text="${member.role}">USER</td>
+                    <td>
+                        <form th:if="${member.id != currentUser.id}"
+                              method="post"
+                              th:action="@{/admin/members/delete/{id}(id=${member.id})}">
+                            <button type="submit" class="btn-delete"
+                                    onclick="return confirm('Delete this member and all their articles?')">Delete</button>
+                        </form>
+                        <span th:if="${member.id == currentUser.id}">-</span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

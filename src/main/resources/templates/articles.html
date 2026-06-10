@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Articles</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>Articles</h2>
+            <div class="user-info">
+                <span>Logged in as: <strong th:text="${currentUser.username}"></strong>
+                    (<span th:text="${currentUser.role}"></span>)</span>
+                <a th:if="${currentUser.role.name() == 'ADMIN'}" href="/admin/members" class="btn-link">Manage Members</a>
+                <a href="/logout" class="btn-link">Logout</a>
+            </div>
+        </div>
+
+        <div th:if="${success}" class="success" th:text="${success}"></div>
+        <div th:if="${error}" class="error" th:text="${error}"></div>
+
+        <h3>Add New Article</h3>
+        <form method="post" th:action="@{/articles/add}">
+            <div>
+                <input type="text" name="title" placeholder="Article title" required>
+            </div>
+            <div>
+                <textarea name="content" placeholder="Write your article here..." rows="4" required></textarea>
+            </div>
+            <button type="submit">Add Article</button>
+        </form>
+
+        <h3>Article List</h3>
+        <div th:if="${#lists.isEmpty(articles)}" class="info">No articles found.</div>
+        <div th:each="article : ${articles}" class="article-card">
+            <h4 th:text="${article.title}">Title</h4>
+            <p th:text="${article.content}">Content</p>
+            <small>By: <span th:text="${article.author.username}"></span> |
+                   <span th:text="${#temporals.format(article.createdAt, 'yyyy-MM-dd HH:mm')}"></span></small>
+            <form method="post" th:action="@{/articles/delete/{id}(id=${article.id})}" style="display:inline;">
+                <button type="submit" class="btn-delete"
+                        onclick="return confirm('Delete this article?')">Delete</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
